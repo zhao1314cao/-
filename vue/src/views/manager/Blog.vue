@@ -26,7 +26,11 @@
           </template>
         </el-table-column>
         <el-table-column prop="categoryName" label="分类"></el-table-column>
-        <el-table-column prop="tags" label="标签"></el-table-column>
+        <el-table-column prop="tags" label="标签">
+          <template v-slot="scope">
+            <el-tag v-for="item in JSON.parse(scope.row.tags || '[]')" :key="item" style="margin-right: 5px">{{ item }}</el-tag>
+          </template>
+        </el-table-column>
         <el-table-column prop="userName" label="发布人"></el-table-column>
         <el-table-column prop="date" label="发布日期"></el-table-column>
         <el-table-column prop="readCount" label="浏览量"></el-table-column>
@@ -54,8 +58,42 @@
 
     <el-dialog name="信息" :visible.sync="fromVisible" width="40%" :close-on-click-modal="false" destroy-on-close>
       <el-form :model="form" label-width="100px" style="padding-right: 50px" :rules="rules" ref="formRef">
-        <el-form-item label="分类名称" prop="name">
-          <el-input v-model="form.name" placeholder="分类名称"></el-input>
+        <el-form-item label="标题" prop="title">
+          <el-input v-model="form.title" placeholder="标题"></el-input>
+        </el-form-item>
+        <el-form-item label="简介" prop="descr">
+          <el-input type="textarea" v-model="form.descr" placeholder="简介"></el-input>
+        </el-form-item>
+        <el-form-item label="封面" prop="cover">
+          <el-upload
+              :action="$baseUrl + '/files/upload'"
+              :headers="{ token: user.token }"
+              list-type="picture"
+              :on-success="handleCoverSuccess"
+          >
+            <el-button type="primary">上传封面</el-button>
+          </el-upload>
+        </el-form-item>
+        <el-form-item label="分类" prop="categoryId">
+          <el-select v-model="form.categoryId" style="width: 100%">
+            <el-option v-for="item in categoryList" :key="item.id" :value="item.id" :label="item.name"></el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item label="标签" prop="tags">
+          <el-select v-model="tagsArr" multiple filterable allow-create default-first-option style="width: 100%">
+            <el-option value="后端"></el-option>
+            <el-option value="Java"></el-option>
+            <el-option value="面试"></el-option>
+            <el-option value="Vue"></el-option>
+            <el-option value="前端"></el-option>
+            <el-option value="大数据"></el-option>
+            <el-option value="算法"></el-option>
+            <el-option value="程序员"></el-option>
+            <el-option value="小白"></el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item label="内容" prop="content">
+          <div id="editor"></div>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -69,24 +107,27 @@
 </template>
 
 <script>
+import E from "wangeditor"
+import hljs from 'highlight.js'
+
 export default {
-  name: "Category",
+  name: "Blog",
   data() {
     return {
       tableData: [],  // 所有的数据
       pageNum: 1,   // 当前的页码
       pageSize: 10,  // 每页显示的个数
       total: 0,
-      name: null,
       fromVisible: false,
       form: {},
       user: JSON.parse(localStorage.getItem('xm-user') || '{}'),
-      rules: {
-        name: [
-          {required: true, message: '请输入名称', trigger: 'blur'},
-        ],
-      },
-      ids: []
+      rules: {},
+      ids: [],
+      categoryList: [],
+      tagsArr: [],
+      editor: null,
+      categoryName: null,
+      userName: null,
     }
   },
   created() {
@@ -95,17 +136,43 @@ export default {
   methods: {
     handleAdd() {   // 新增数据
       this.form = {}  // 新增数据的时候清空数据
+      this.tagsArr = []
+      this.setRichText()
       this.fromVisible = true   // 打开弹窗
     },
     handleEdit(row) {   // 编辑数据
       this.form = JSON.parse(JSON.stringify(row))  // 给form对象赋值  注意要深拷贝数据
+      this.tagsArr = JSON.parse(this.form.tags || '[]')
       this.fromVisible = true   // 打开弹窗
+      this.setRichText()
+      setTimeout(() => {
+        this.editor.txt.html(this.form.content)
+      }, 0)
+    },
+    setRichText() {
+      this.$nextTick(() => {
+        this.editor = new E(`#editor`)
+        this.editor.highlight = hljs
+        this.editor.config.uploadImgServer = this.$baseUrl + '/files/editor/upload'
+        this.editor.config.uploadFileName = 'file'
+        this.editor.config.uploadImgHeaders = {
+          token: this.user.token
+        }
+        this.editor.config.uploadImgParams = {
+          type: 'img',
+        }
+        this.editor.create()  // 创建
+      })
+    },
+    handleCoverSuccess(res){
+        this.form.cover=res.data
     },
     save() {   // 保存按钮触发的逻辑  它会触发新增或者更新
       this.$refs.formRef.validate((valid) => {
         if (valid) {
+          this.form.tags=JSON.stringify(this.tagsArr)
           this.$request({
-            url: this.form.id ? '/category/update' : '/category/add',
+            url: this.form.id ? '/blog/update' : '/blog/add',
             method: this.form.id ? 'PUT' : 'POST',
             data: this.form
           }).then(res => {
@@ -122,7 +189,7 @@ export default {
     },
     del(id) {   // 单个删除
       this.$confirm('您确定删除吗？', '确认删除', {type: "warning"}).then(response => {
-        this.$request.delete('/category/delete/' + id).then(res => {
+        this.$request.delete('/blog/delete/' + id).then(res => {
           if (res.code === '200') {   // 表示操作成功
             this.$message.success('操作成功')
             this.load(1)
@@ -142,7 +209,7 @@ export default {
         return
       }
       this.$confirm('您确定批量删除这些数据吗？', '确认删除', {type: "warning"}).then(response => {
-        this.$request.delete('/category/delete/batch', {data: this.ids}).then(res => {
+        this.$request.delete('/blog/delete/batch', {data: this.ids}).then(res => {
           if (res.code === '200') {   // 表示操作成功
             this.$message.success('操作成功')
             this.load(1)
@@ -155,19 +222,26 @@ export default {
     },
     load(pageNum) {  // 分页查询
       if (pageNum) this.pageNum = pageNum
-      this.$request.get('/category/selectPage', {
+      this.$request.get('/blog/selectPage', {
         params: {
           pageNum: this.pageNum,
           pageSize: this.pageSize,
           name: this.name,
         }
       }).then(res => {
+        console.log(res.data)
         this.tableData = res.data?.list
         this.total = res.data?.total
       })
+
+      this.$request.get('/category/selectAll').then(res => {
+        this.categoryList = res.data || []
+      })
     },
     reset() {
-      this.name = null
+      this.title = null
+      this.categoryName = null
+      this.userName = null
       this.load(1)
     },
     handleCurrentChange(pageNum) {

@@ -1,4 +1,4 @@
-﻿package com.example.entity;
+package com.example.entity;
 
 import java.io.Serializable;
 
@@ -24,7 +24,9 @@ public class Blog implements Serializable {
     private Integer readCount;
     /** 类别ID */
     private Integer categoryId;
+
     private String categoryName;
+
     private String userName;
 
     public String getCategoryName() {

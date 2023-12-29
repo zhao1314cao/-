@@ -9,7 +9,7 @@
     </sql>
 
     <select id="selectAll" resultType="com.example.entity.Blog">
-        select blog.*,category.name as name,user.name as username
+        select blog.*,category.name as categoryName,user.name as username
         from blog
         left join category
         on blog.category_id = category.id

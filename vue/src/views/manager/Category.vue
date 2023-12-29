@@ -145,7 +145,7 @@ export default {
         params: {
           pageNum: this.pageNum,
           pageSize: this.pageSize,
-          name: this.name,
+          // name: this.name,
         }
       }).then(res => {
         this.tableData = res.data?.list
