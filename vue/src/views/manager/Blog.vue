@@ -1,7 +1,9 @@
 <template>
   <div>
     <div class="search">
-      <el-input placeholder="请输入名称查询" style="width: 200px" v-model="name"></el-input>
+      <el-input placeholder="请输入标题查询" style="width: 200px; margin-right: 10px" v-model="title"></el-input>
+      <el-input placeholder="请输入分类查询" style="width: 200px; margin-right: 10px" v-model="categoryName"></el-input>
+      <el-input placeholder="请输入用户名查询" style="width: 200px; margin-right: 10px" v-model="userName"></el-input>
       <el-button type="info" plain style="margin-left: 10px" @click="load(1)">查询</el-button>
       <el-button type="warning" plain style="margin-left: 10px" @click="reset">重置</el-button>
     </div>
@@ -128,6 +130,7 @@ export default {
       editor: null,
       categoryName: null,
       userName: null,
+      title: null
     }
   },
   created() {
@@ -170,7 +173,8 @@ export default {
     save() {   // 保存按钮触发的逻辑  它会触发新增或者更新
       this.$refs.formRef.validate((valid) => {
         if (valid) {
-          this.form.tags=JSON.stringify(this.tagsArr)
+          this.form.tags=JSON.stringify(this.tagsArr)   //把json数组转化为json字符串存在数据库
+          this.form.content=this.editor.txt.html()
           this.$request({
             url: this.form.id ? '/blog/update' : '/blog/add',
             method: this.form.id ? 'PUT' : 'POST',
@@ -226,7 +230,9 @@ export default {
         params: {
           pageNum: this.pageNum,
           pageSize: this.pageSize,
-          name: this.name,
+          title: this.title,
+          categoryName:this.categoryName,
+          userName:this.userName
         }
       }).then(res => {
         console.log(res.data)
