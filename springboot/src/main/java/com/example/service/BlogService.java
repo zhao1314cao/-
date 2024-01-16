@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * 博客业务处理
@@ -77,4 +78,11 @@ public class BlogService {
         return PageInfo.of(list);
     }
 
+    public List<Blog> selectTop() {
+        List<Blog> blogList = this.selectAll(null);
+        blogList=blogList.stream().sorted((b1,b2)->b2.getReadCount().compareTo(b1.getReadCount()))
+                .limit(20)
+                .collect(Collectors.toList());
+        return blogList;
+    }
 }

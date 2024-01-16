@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * 活动业务处理
@@ -69,6 +70,16 @@ public class ActivityService {
         PageHelper.startPage(pageNum, pageSize);
         List<Activity> list = activityMapper.selectAll(activity);
         return PageInfo.of(list);
+    }
+    /**
+     * 热门活动
+     */
+    public List<Activity> selectTop() {
+        List<Activity> activityList = this.selectAll(null);
+        activityList = activityList.stream().sorted((b1, b2) -> b2.getReadCount().compareTo(b1.getReadCount()))
+                .limit(2)
+                .collect(Collectors.toList());
+        return activityList;
     }
 
 }
