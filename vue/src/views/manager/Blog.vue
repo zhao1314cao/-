@@ -198,6 +198,7 @@ export default {
           }).then(res => {
             if (res.code === '200') {  // 表示成功保存
               this.$message.success('保存成功')
+              console.log(this.user)
               this.load(1)
               this.fromVisible = false
             } else {

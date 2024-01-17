@@ -24,10 +24,13 @@
     </select>
 
     <select id="selectById" resultType="com.example.entity.Blog">
-        select
-        <include refid="Base_Column_List" />
+        select blog.*,category.name as categoryName,user.name as username
         from blog
-        where id = #{id}
+        left join category
+        on blog.category_id = category.id
+        left join user
+        on blog.user_id = user.id
+        where blog.id = #{id}
     </select>
 
     <delete id="deleteById">
