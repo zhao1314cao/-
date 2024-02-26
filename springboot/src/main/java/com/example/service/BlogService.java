@@ -154,6 +154,11 @@ public class BlogService {
                         .collect(Collectors.toSet()));
             }
         }
-        return blogSet.stream().limit(5).collect(Collectors.toSet());
+        blogSet = blogSet.stream().limit(5).collect(Collectors.toSet());
+        blogSet.forEach(b->{
+            int likeCount=likesMapper.selectByFidAndModule(b.getId(),LikesModuleEnum.BLOG.getValue());
+            b.setLikesCount(likeCount);
+        });
+        return blogSet;
     }
 }

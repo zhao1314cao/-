@@ -24,6 +24,7 @@
           <span style="margin-right: 20px; cursor: pointer;" @click="setLikes" :class="{'active': blog.userLike}"><i class="el-icon-like"></i> {{ blog.likesCount }}</span>
           <span style=" cursor: pointer"><i class="el-icon-star-off" @click="setCollect" :class="{'active': blog.userCollect}"> {{ blog.collectCount}}</i> </span>
         </div>
+        <Comment :fid="blogId" module='博客'/>
       </div>
 
       <div style="width: 260px">
@@ -88,11 +89,13 @@
 
 <script>
 import Footer from "@/components/Footer";
+import Comment from "@/components/Comment";
 
 export default {
   name: "BlogDetail",
   components: {
-    Footer
+    Footer,
+    Comment
   },
   data() {
     return {
@@ -104,8 +107,10 @@ export default {
   },
   created() {
     this.load()
+
   },
   methods: {
+
     setCollect(){
       this.$request.post('/collect/set',{fid:this.blogId, module:'博客'}).then(res => {
         if(res.code==='200'){
@@ -182,6 +187,9 @@ p {
   margin-bottom: 5px;
 }
 .recommend-title:hover{
+  color: #2a60c9;
+}
+.comment-active{
   color: #2a60c9;
 }
 </style>
