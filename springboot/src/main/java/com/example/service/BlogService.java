@@ -78,8 +78,25 @@ public class BlogService {
     @Transactional
     public Blog selectById(Integer id) {
         Blog blog = blogMapper.selectById(id);
-        User user = userMapper.selectById(blog.getUserId());
-        blog.setUser(user);   //设置作者信息
+        User user = userMapper.selectById(blog.getUserId());//查询作者信息
+        List<Blog> userBlogList = blogMapper.selectUserBlog(user.getId()); //查询当前用户的博客列表
+        //用户的文章数
+        user.setBlogCount(userBlogList.size());
+
+        //用户收到的点赞数据和收藏数
+        int userLikeCount=0;
+        int userCollectCount=0;
+        for (Blog b : userBlogList) {
+            Integer fid = b.getId();  //当前用户的博客id
+            int count1 = likesMapper.selectByFidAndModule(fid, LikesModuleEnum.BLOG.getValue());   //查询当前博客的点赞数
+            int count2 = collectMapper.selectByFidAndModule(fid, LikesModuleEnum.BLOG.getValue()); //查询当前博客的收藏数
+            userLikeCount+=count1;
+            userCollectCount+=count2;
+        }
+        user.setLikesCount(userLikeCount);
+        user.setCollectCount(userCollectCount);
+        //设置作者信息
+        blog.setUser(user);
         //查询当前博客的点赞数据
         int likesCount = likesMapper.selectByFidAndModule(id, LikesModuleEnum.BLOG.getValue());
         blog.setLikesCount(likesCount);
@@ -102,6 +119,10 @@ public class BlogService {
         blog.setUserLike(userLikes!=null);
         //设置blog的userCollect
         blog.setUserCollect(userCollect!=null);
+
+        //更新当前博客的浏览量
+        blog.setReadCount(blog.getReadCount() + 1);
+        this.updateById(blog);
         return blog;
     }
 
@@ -115,6 +136,7 @@ public class BlogService {
     /**
      * 分页查询
      */
+    @Transactional
     public PageInfo<Blog> selectPage(Blog blog, Integer pageNum, Integer pageSize) {
         PageHelper.startPage(pageNum, pageSize);
         List<Blog> list = blogMapper.selectAll(blog);
@@ -134,7 +156,7 @@ public class BlogService {
                 .collect(Collectors.toList());
         return blogList;
     }
-
+    @Transactional
     public Set<Blog> selectRecommend(Integer blogId) {
         Blog blog = this.selectById(blogId);
         String tags = blog.getTags();
@@ -156,8 +178,8 @@ public class BlogService {
         }
         blogSet = blogSet.stream().limit(5).collect(Collectors.toSet());
         blogSet.forEach(b->{
-            int likeCount=likesMapper.selectByFidAndModule(b.getId(),LikesModuleEnum.BLOG.getValue());
-            b.setLikesCount(likeCount);
+            int userLikeCount=likesMapper.selectByFidAndModule(b.getId(),LikesModuleEnum.BLOG.getValue());
+            b.setLikesCount(userLikeCount);
         });
         return blogSet;
     }

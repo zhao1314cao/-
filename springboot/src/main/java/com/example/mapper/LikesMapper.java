@@ -10,5 +10,6 @@ public interface LikesMapper {
 
     void deleteById(Integer id);
 
+
     int selectByFidAndModule(@Param("fid") Integer fid, @Param("module") String module);
 }

@@ -59,13 +59,15 @@
           </div>
           <div>
             <div v-for="item in showList" :key="item.id" style="margin: 15px 0" class="line1">
-              <span style="width: 18px; display: inline-block; text-align: right; margin-right: 10px">
-                <span style="color: orangered" v-if="item.index === 1">{{ item.index }}</span>
-                <span style="color: goldenrod" v-else-if="item.index === 2">{{ item.index }}</span>
-                <span style="color: dodgerblue" v-else-if="item.index === 3">{{ item.index }}</span>
-                <span style="color: #666" v-else>{{ item.index }}</span>
-              </span>
-              <span style="color: #666;">{{ item.title }}</span>
+              <a :href="'/front/blogDetail?blogId='+item.id" target="_blank">
+                <span style="width: 18px; display: inline-block; text-align: right; margin-right: 10px">
+                  <span style="color: orangered" v-if="item.index === 1">{{ item.index }}</span>
+                  <span style="color: goldenrod" v-else-if="item.index === 2">{{ item.index }}</span>
+                  <span style="color: dodgerblue" v-else-if="item.index === 3">{{ item.index }}</span>
+                  <span style="color: #666" v-else>{{ item.index }}</span>
+                </span>
+                <span style="color: #666;">{{ item.title }}</span>
+              </a>
             </div>
           </div>
         </div>

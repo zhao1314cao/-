@@ -1,6 +1,7 @@
 package com.example.mapper;
 
 import com.example.entity.Blog;
+import org.apache.ibatis.annotations.Select;
 
 import java.util.List;
 
@@ -34,4 +35,11 @@ public interface BlogMapper {
     */
     List<Blog> selectAll(Blog blog);
 
+    /**
+     * 查询当前用户的博客
+     * @param id
+     * @return
+     */
+    @Select("select * from blog where user_id=#{id}")
+    List<Blog> selectUserBlog(Integer id);
 }

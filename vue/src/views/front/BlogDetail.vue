@@ -40,15 +40,15 @@
           <div style="display: flex">
             <div style="flex: 1; text-align: center">
               <div style="margin-bottom: 5px">文章</div>
-              <div style="color: #888">10</div>
+              <div style="color: #888">{{ blog.user?.blogCount }}</div>
             </div>
             <div style="flex: 1; text-align: center">
               <div style="margin-bottom: 5px">点赞</div>
-              <div style="color: #888">10</div>
+              <div style="color: #888">{{ blog.user?.likesCount }}</div>
             </div>
             <div style="flex: 1; text-align: center">
               <div style="margin-bottom: 5px">收藏</div>
-              <div style="color: #888">10</div>
+              <div style="color: #888">{{ blog.user?.collectCount }}</div>
             </div>
           </div>
         </div>
