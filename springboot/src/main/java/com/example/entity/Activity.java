@@ -15,7 +15,75 @@ public class Activity implements Serializable {
     private String start;
     /** 结束时间 */
     private String end;
+    /** 活动形式 */
+    private String form;
+    /** 活动地址 */
+    private String address;
+    /** 主办方 */
+    private String host;
+    /** 浏览量 */
+    private Integer readCount;
+    private String content;
+    private String cover;
+    /**是否结束*/
+    private Boolean isEnd;
+    /**是否报名*/
+    private Boolean isSign;
+    /**收藏量*/
+    private Integer collectCount;
+    /**点赞量*/
+    private Integer likesCount;
+    /**是否点过赞*/
+    private Boolean isLike;
+    /**是否被收藏*/
+    private Boolean isCollect;
 
+    public Boolean getIsLike() {
+        return this.isLike;
+    }
+
+    public void setIsLike(Boolean isLike) {
+        this.isLike = isLike;
+    }
+
+    public Boolean getIsCollect() {
+        return this.isCollect;
+    }
+
+    public void setIsCollect(Boolean isCollect) {
+        this.isCollect = isCollect;
+    }
+
+    public Integer getCollectCount() {
+        return collectCount;
+    }
+
+    public void setCollectCount(Integer collectCount) {
+        this.collectCount = collectCount;
+    }
+
+    public Integer getLikesCount() {
+        return likesCount;
+    }
+
+    public void setLikesCount(Integer likesCount) {
+        this.likesCount = likesCount;
+    }
+
+    public Boolean getIsSign() {
+        return this.isSign;
+    }
+
+    public void setIsSign(Boolean isSign) {
+        this.isSign = isSign;
+    }
+
+    public void setIsEnd(Boolean isEnd) {
+        this.isEnd = isEnd;
+    }
+    public Boolean getIsEnd() {
+        return this.isEnd;
+    }
     public Integer getId() {
         return id;
     }
@@ -104,14 +172,5 @@ public class Activity implements Serializable {
         this.cover = cover;
     }
 
-    /** 活动形式 */
-    private String form;
-    /** 活动地址 */
-    private String address;
-    /** 主办方 */
-    private String host;
-    /** 浏览量 */
-    private Integer readCount;
-    private String content;
-    private String cover;
+
 }

@@ -121,8 +121,8 @@ public class BlogService {
         blog.setUserCollect(userCollect!=null);
 
         //更新当前博客的浏览量
-        blog.setReadCount(blog.getReadCount() + 1);
-        this.updateById(blog);
+//        blog.setReadCount(blog.getReadCount() + 1);
+//        this.updateById(blog);
         return blog;
     }
 
@@ -182,5 +182,9 @@ public class BlogService {
             b.setLikesCount(userLikeCount);
         });
         return blogSet;
+    }
+
+    public void updateReadCount(Integer blogId) {
+        blogMapper.updateReadCount(blogId);
     }
 }

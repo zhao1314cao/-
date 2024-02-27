@@ -79,8 +79,6 @@
 
       </div>
 
-
-
     </div>
 
     <Footer />
@@ -107,10 +105,9 @@ export default {
   },
   created() {
     this.load()
-
+    this.updateReadCount()
   },
   methods: {
-
     setCollect(){
       this.$request.post('/collect/set',{fid:this.blogId, module:'博客'}).then(res => {
         if(res.code==='200'){
@@ -124,7 +121,6 @@ export default {
       this.$request.post('/likes/set',{fid:this.blogId, module:'博客'}).then(res => {
         if(res.code==='200'){
           this.$message.success('操作成功')
-
           this.load()   //重新加载数据
         }
       })
@@ -132,13 +128,14 @@ export default {
     load() {
       this.$request.get('/blog/selectById/' + this.blogId).then(res => {
         this.blog = res.data || {}
-
         this.tagsArr = JSON.parse(this.blog.tags || '[]')
       })
-
       this.$request.get('/blog/selectRecommend/' + this.blogId).then(res => {
         this.recommendList = res.data || []
       })
+    },
+    updateReadCount() {
+      this.$request.put('/blog/updateReadCount/'+this.blogId)
     }
   }
 }

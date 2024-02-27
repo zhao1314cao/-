@@ -86,6 +86,7 @@
             <el-option v-for="item in categoryList" :key="item.id" :value="item.id" :label="item.name"></el-option>
           </el-select>
         </el-form-item>
+        <!--标签选择-->
         <el-form-item label="标签" prop="tags">
           <el-select v-model="tagsArr" multiple filterable allow-create default-first-option style="width: 100%">
             <el-option value="后端"></el-option>
