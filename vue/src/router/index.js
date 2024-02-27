@@ -41,6 +41,7 @@ const routes = [
       { path: 'search', name: 'Search', meta: { name: '博客搜索' }, component: () => import('../views/front/Search') },
       { path: 'activity', name: 'Activity', meta: { name: '活动页面' }, component: () => import('../views/front/Activity') },
       { path: 'activityDetail', name: 'ActivityDetail', meta: { name: '活动详情' }, component: () => import('../views/front/ActivityDetail') },
+      { path: 'newBlog', name: 'NewBlog', meta: { name: '新增博客' }, component: () => import('../views/front/NewBlog') },
     ]
   },
   { path: '/login', name: 'Login', meta: { name: '登录' }, component: () => import('../views/Login.vue') },

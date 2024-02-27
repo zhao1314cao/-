@@ -17,7 +17,8 @@
             <div style="display: flex; align-items: center">
               <div style="flex: 1">
                 <el-button type="primary" disabled v-if="activity.isEnd" key="已结束">已结束</el-button>
-                <el-button type="primary" disabled v-else-if="activity.isSign" key="已报名">已报名</el-button>
+                <el-button type="success" v-else-if="activity.isSign" :key="signText" @click="cancel" @mouseenter.native="signText='取消报名'" @mouseleave.native="signText='已报名'">
+                  {{signText}}</el-button>
                 <el-button type="primary" v-else @click="sign">报名</el-button>
               </div>
 
@@ -60,7 +61,8 @@ export default {
       activity: {},
       activityId: this.$route.query.activityId,
       userId: null,
-      time: null
+      time: null,
+      signText: null
     }
   },
   created() {
@@ -68,6 +70,19 @@ export default {
     this.updateReadCount()
   },
   methods: {
+    cancel() {   // 单个取消
+      this.$confirm('您确定取消报名吗？', '确认取消', {type: "warning"}).then(response => {
+        this.$request.delete('/activitySign/deleteByActivityId/' + this.activityId).then(res => {
+          if (res.code === '200') {   // 表示操作成功
+            this.$message.success('操作成功')
+            this.load(1)
+          } else {
+            this.$message.error(res.msg)  // 弹出错误的信息
+          }
+        })
+      }).catch(() => {
+      })
+    },
     like(){
       this.$request.post('/likes/set/',{ fid:this.activityId,module:'活动'}).then(res => {
         if(res.code==='200'){

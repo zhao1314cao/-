@@ -38,4 +38,10 @@ public interface ActivitySignMapper {
        * 根据活动id和用户id查询
      */
     ActivitySign selectByActivityIdAndUserId(@Param("activityId") Integer activityId, @Param("userId") Integer userId);
+
+    /**
+     * 根据activityId删除
+     * @param activityId
+     */
+    void deleteByActivityId(Integer activityId);
 }

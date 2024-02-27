@@ -5,6 +5,7 @@ import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.json.JSONArray;
 import cn.hutool.json.JSONUtil;
 import com.example.common.enums.LikesModuleEnum;
+import com.example.common.enums.RoleEnum;
 import com.example.entity.*;
 import com.example.mapper.BlogMapper;
 import com.example.mapper.CollectMapper;
@@ -119,10 +120,6 @@ public class BlogService {
         blog.setUserLike(userLikes!=null);
         //设置blog的userCollect
         blog.setUserCollect(userCollect!=null);
-
-        //更新当前博客的浏览量
-//        blog.setReadCount(blog.getReadCount() + 1);
-//        this.updateById(blog);
         return blog;
     }
 
@@ -186,5 +183,64 @@ public class BlogService {
 
     public void updateReadCount(Integer blogId) {
         blogMapper.updateReadCount(blogId);
+    }
+
+    public PageInfo<Blog> selectUser(Blog blog, Integer pageNum, Integer pageSize) {
+        Account currentUser = TokenUtils.getCurrentUser();
+        if(RoleEnum.USER.name().equals(currentUser.getRole())){
+            blog.setUserId(currentUser.getId());
+        }
+        return this.selectPage(blog,pageNum,pageSize);
+    }
+    //查询用户点赞的博客数据
+    @Transactional
+    public PageInfo<Blog> selectLike(Blog blog,Integer pageNum,Integer pageSize) {
+        Account currentUser = TokenUtils.getCurrentUser();
+        if (RoleEnum.USER.name().equals(currentUser.getRole())) {
+            blog.setUserId(currentUser.getId());
+        }
+        PageHelper.startPage(pageNum, pageSize);
+        List<Blog> list = blogMapper.selectLike(blog);
+        PageInfo<Blog> pageInfo = PageInfo.of(list);
+        List<Blog> blogList = pageInfo.getList();
+        for (Blog b : blogList) {
+            int likesCount = likesMapper.selectByFidAndModule(b.getId(), LikesModuleEnum.BLOG.getValue());
+            b.setLikesCount(likesCount);
+        }
+        return pageInfo;
+    }
+    //查询用户收藏的博客数据
+    @Transactional
+    public PageInfo<Blog> selectCollect(Blog blog, Integer pageNum, Integer pageSize) {
+        Account currentUser = TokenUtils.getCurrentUser();
+        if (RoleEnum.USER.name().equals(currentUser.getRole())) {
+            blog.setUserId(currentUser.getId());
+        }
+        PageHelper.startPage(pageNum, pageSize);
+        List<Blog> list = blogMapper.selectCollect(blog);
+        PageInfo<Blog> pageInfo = PageInfo.of(list);
+        List<Blog> blogList = pageInfo.getList();
+        for (Blog b : blogList) {
+            int likesCount = likesMapper.selectByFidAndModule(b.getId(), LikesModuleEnum.BLOG.getValue());
+            b.setLikesCount(likesCount);
+        }
+        return pageInfo;
+    }
+    //查询用户评论的博客数据
+    @Transactional
+    public PageInfo<Blog> selectComment(Blog blog, Integer pageNum, Integer pageSize) {
+        Account currentUser = TokenUtils.getCurrentUser();
+        if (RoleEnum.USER.name().equals(currentUser.getRole())) {
+            blog.setUserId(currentUser.getId());
+        }
+        PageHelper.startPage(pageNum, pageSize);
+        List<Blog> list = blogMapper.selectComment(blog);
+        PageInfo<Blog> pageInfo = PageInfo.of(list);
+        List<Blog> blogList = pageInfo.getList();
+        for (Blog b : blogList) {
+            int likesCount = likesMapper.selectByFidAndModule(b.getId(), LikesModuleEnum.BLOG.getValue());
+            b.setLikesCount(likesCount);
+        }
+        return pageInfo;
     }
 }

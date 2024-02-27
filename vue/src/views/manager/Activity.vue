@@ -44,7 +44,7 @@
         </el-table-column>
       </el-table>
 
-      <div class="pagination">
+      <div class="card" style="margin-top: 10px; padding: 10px">
         <el-pagination
             background
             @current-change="handleCurrentChange"

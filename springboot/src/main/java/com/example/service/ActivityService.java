@@ -2,6 +2,7 @@ package com.example.service;
 
 import cn.hutool.core.date.DateUtil;
 import com.example.common.enums.LikesModuleEnum;
+import com.example.common.enums.RoleEnum;
 import com.example.entity.*;
 import com.example.mapper.ActivityMapper;
 import com.example.mapper.ActivitySignMapper;
@@ -111,6 +112,71 @@ public class ActivityService {
         Account currentUser = TokenUtils.getCurrentUser();
         for (Activity act : activityList) {
             this.setActivity(act,currentUser);
+        }
+        return pageInfo;
+    }
+    public PageInfo<Activity> selectLike(Activity activity, Integer pageNum, Integer pageSize) {
+        Account currentUser = TokenUtils.getCurrentUser();
+        if (RoleEnum.USER.name().equals(currentUser.getRole())) {
+            activity.setUserId(currentUser.getId());
+        }
+        PageHelper.startPage(pageNum, pageSize);
+        List<Activity> list = activityMapper.selectLike(activity);
+        PageInfo<Activity> pageInfo = PageInfo.of(list);
+        List<Activity> activityList = pageInfo.getList();
+        for (Activity act : activityList) {
+            this.setActivity(act, currentUser);
+        }
+        return pageInfo;
+    }
+
+    public PageInfo<Activity> selectCollect(Activity activity, Integer pageNum, Integer pageSize) {
+        Account currentUser = TokenUtils.getCurrentUser();
+        if (RoleEnum.USER.name().equals(currentUser.getRole())) {
+            activity.setUserId(currentUser.getId());
+        }
+        PageHelper.startPage(pageNum, pageSize);
+        List<Activity> list = activityMapper.selectCollect(activity);
+        PageInfo<Activity> pageInfo = PageInfo.of(list);
+        List<Activity> activityList = pageInfo.getList();
+        for (Activity act : activityList) {
+            this.setActivity(act, currentUser);
+        }
+        return pageInfo;
+    }
+
+    public PageInfo<Activity> selectComment(Activity activity, Integer pageNum, Integer pageSize) {
+        Account currentUser = TokenUtils.getCurrentUser();
+        if (RoleEnum.USER.name().equals(currentUser.getRole())) {
+            activity.setUserId(currentUser.getId());
+        }
+        PageHelper.startPage(pageNum, pageSize);
+        List<Activity> list = activityMapper.selectComment(activity);
+        PageInfo<Activity> pageInfo = PageInfo.of(list);
+        List<Activity> activityList = pageInfo.getList();
+        for (Activity act : activityList) {
+            this.setActivity(act, currentUser);
+        }
+        return pageInfo;
+    }
+
+    /** 查询出用户报名的活动列表
+     * @param activity
+     * @param pageNum
+     * @param pageSize
+     * @return
+     */
+    public PageInfo<Activity> selectUser(Activity activity, Integer pageNum, Integer pageSize) {
+        Account currentUser = TokenUtils.getCurrentUser();
+        if (RoleEnum.USER.name().equals(currentUser.getRole())) {
+            activity.setUserId(currentUser.getId());
+        }
+        PageHelper.startPage(pageNum, pageSize);
+        List<Activity> list = activityMapper.selectUser(activity);
+        PageInfo<Activity> pageInfo = PageInfo.of(list);
+        List<Activity> activityList = pageInfo.getList();
+        for (Activity act : activityList) {
+            this.setActivity(act, currentUser);
         }
         return pageInfo;
     }

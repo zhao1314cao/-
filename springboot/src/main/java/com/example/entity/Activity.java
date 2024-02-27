@@ -37,6 +37,16 @@ public class Activity implements Serializable {
     private Boolean isLike;
     /**是否被收藏*/
     private Boolean isCollect;
+    /**用户id*/
+    private Integer userId;
+
+    public Integer getUserId() {
+        return userId;
+    }
+
+    public void setUserId(Integer userId) {
+        this.userId = userId;
+    }
 
     public Boolean getIsLike() {
         return this.isLike;

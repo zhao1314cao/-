@@ -36,6 +36,14 @@ public class ActivitySignController {
         activitySignService.deleteById(id);
         return Result.success();
     }
+    /**
+     * 根据活动Id删除
+     */
+    @DeleteMapping("/deleteByActivityId/{activityId}")
+    public Result deleteByActivityId(@PathVariable Integer activityId) {
+        activitySignService.deleteByActivityId(activityId);
+        return Result.success();
+    }
 
     /**
      * 批量删除

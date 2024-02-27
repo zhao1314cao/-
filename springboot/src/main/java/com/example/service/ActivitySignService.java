@@ -84,4 +84,12 @@ public class ActivitySignService {
         List<ActivitySign> list = activitySignMapper.selectAll(activitySign);
         return PageInfo.of(list);
     }
+
+    /**
+     * 根据活动id删除
+     * @param activityId
+     */
+    public void deleteByActivityId(Integer activityId) {
+        activitySignMapper.deleteByActivityId(activityId);
+    }
 }

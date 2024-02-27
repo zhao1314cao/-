@@ -50,4 +50,10 @@ public interface BlogMapper {
      */
     @Update("update blog set read_count=read_count+1 where id= #{blogId}")
     void updateReadCount(Integer blogId);
+
+    List<Blog> selectLike(Blog blog);
+
+    List<Blog> selectCollect(Blog blog);
+
+    List<Blog> selectComment(Blog blog);
 }

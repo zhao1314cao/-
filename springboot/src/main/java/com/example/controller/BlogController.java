@@ -77,7 +77,7 @@ public class BlogController {
      * 查询所有
      */
     @GetMapping("/selectAll")
-    public Result selectAll(Blog blog ) {
+    public Result selectAll(@RequestBody Blog blog ) {
         List<Blog> list = blogService.selectAll(blog);
         return Result.success(list);
     }
@@ -90,6 +90,26 @@ public class BlogController {
                              @RequestParam(defaultValue = "1") Integer pageNum,
                              @RequestParam(defaultValue = "10") Integer pageSize) {
         PageInfo<Blog> page = blogService.selectPage(blog, pageNum, pageSize);
+        return Result.success(page);
+    }
+    /**
+     * 分页查询当前用户的博客列表
+     */
+    @GetMapping("/selectUser")
+    public Result selectUser(Blog blog,
+                             @RequestParam(defaultValue = "1") Integer pageNum,
+                             @RequestParam(defaultValue = "10") Integer pageSize) {
+        PageInfo<Blog> page = blogService.selectUser(blog, pageNum, pageSize);
+        return Result.success(page);
+    }
+    /**
+     * 分页查询当前用户的点赞博客列表
+     */
+    @GetMapping("/selectLike")
+    public Result selectLike(Blog blog,
+                             @RequestParam(defaultValue = "1") Integer pageNum,
+                             @RequestParam(defaultValue = "10") Integer pageSize) {
+        PageInfo<Blog> page = blogService.selectLike(blog,pageNum,pageSize);
         return Result.success(page);
     }
     /**
@@ -108,5 +128,26 @@ public class BlogController {
     public Result  selectRecommend(@PathVariable Integer blogId) {
         Set<Blog> list = blogService.selectRecommend(blogId);
         return Result.success(list);
+    }
+    /**
+     * 分页查询当前用户收藏的博客列表
+     */
+    @GetMapping("/selectCollect")
+    public Result selectCollect(Blog blog,
+                                @RequestParam(defaultValue = "1") Integer pageNum,
+                                @RequestParam(defaultValue = "10") Integer pageSize) {
+        PageInfo<Blog> page = blogService.selectCollect(blog, pageNum, pageSize);
+        return Result.success(page);
+    }
+
+    /**
+     * 分页查询当前用户评论的博客列表
+     */
+    @GetMapping("/selectComment")
+    public Result selectComment(Blog blog,
+                                @RequestParam(defaultValue = "1") Integer pageNum,
+                                @RequestParam(defaultValue = "10") Integer pageSize) {
+        PageInfo<Blog> page = blogService.selectComment(blog, pageNum, pageSize);
+        return Result.success(page);
     }
 }
